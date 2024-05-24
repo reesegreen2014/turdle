@@ -65,12 +65,20 @@ viewGameButton.addEventListener('click', viewGame);
 
 viewStatsButton.addEventListener('click', viewStats);
 
-window.addEventListener('load', fetchWordsFromAPI)
+window.addEventListener('load', async () => {
+  try {
+    words = await fetchWordsFromAPI();
+    setGame();
+  } catch (error) {
+    console.error('Error setting up the game:', error);
+  }
+});
 
 // Functions
 function setGame() {
   currentRow = 1;
   winningWord = getRandomWord(words);
+  console.log({winningWord})
   updateInputPermissions();
 }
 
