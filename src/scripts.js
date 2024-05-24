@@ -1,12 +1,34 @@
 import './styles.css';
 import './assets/turdle-turtle.png';
-import { words } from './words.js';
 
 // Global Variables
 var winningWord = '';
 var currentRow = 1;
 var guess = '';
 var gamesPlayed = [];
+let words = [];
+//Fetch
+
+function fetchWordsFromAPI (){
+  return fetch('http://localhost:3001/api/v1/words')
+    .then(response => {
+      if(!response.ok) {
+        throw new Error ('Failed to fetch data from the API.');
+      }
+      return response.json();
+    })
+    .then(words => {
+      if(!words) {
+        throw new Error ('API response does not contain words.');
+      } 
+      console.log('Words from API:', words)
+      return words;
+    })
+    .catch(error => {
+      console.error('Error Fetching Words:', error)
+      throw error;
+    })
+}
 
 // Query Selectors
 var inputs = document.querySelectorAll('input');
@@ -43,10 +65,12 @@ viewGameButton.addEventListener('click', viewGame);
 
 viewStatsButton.addEventListener('click', viewStats);
 
+window.addEventListener('load', fetchWordsFromAPI)
+
 // Functions
 function setGame() {
   currentRow = 1;
-  winningWord = getRandomWord();
+  winningWord = getRandomWord(words);
   updateInputPermissions();
 }
 
